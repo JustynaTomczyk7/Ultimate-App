@@ -21,7 +21,7 @@ export function LoginPage() {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate("/");
+    navigate("/panel");
   };
   return (
     <AuthContainer>

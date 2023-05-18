@@ -12,8 +12,14 @@ const GlobalStyle = styled.createGlobalStyle`
   :root {
     --dark-blue: #233f81;
     --dark-blue-border: #24399b;
+    --blue: #3e69c4;
     --white: #fff;
     --gray: #c6ceda;
+    --cream: #fffff7;
+    --dark-green: #415c27;
+    --green: #589103;
+    --light-green: #4eb100;
+    --red: #ff1d25;
   }
 
   @font-face {

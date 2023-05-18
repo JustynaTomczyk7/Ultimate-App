@@ -21,7 +21,7 @@ export function RegistrationPage() {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate("/");
+    navigate("/panel");
   };
 
   return (
