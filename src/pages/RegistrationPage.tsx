@@ -13,6 +13,7 @@ import {
   Alert,
 } from "../styles/authContainerStyles/authContainerStyles";
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const StyledButton = styled(AuthContainerButton)`
   margin-top: 70px;
@@ -33,10 +34,12 @@ type FormErrors = {
 };
 
 export function RegistrationPage() {
+  const navigate = useNavigate();
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
   const [formErrors, setFormErrors] = useState<FormErrors>();
+  const [apiError, setApiError] = useState("");
 
   const validateEmail = () => {
     const emailErrorMessage = !checkIsEmailValid(emailValue)
@@ -96,14 +99,40 @@ export function RegistrationPage() {
     return passwordErrorMessage;
   };
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isEmailValid = !validateEmail();
     const isPasswordValid = !validatePassword();
     const isRepeatPasswordValid = !validateRepeatPassword();
 
     if (isEmailValid && isPasswordValid && isRepeatPasswordValid) {
-      console.log("poprawne");
+      try {
+        const response = await fetch(
+          "http://api.ultimate.systems/public/index.php/api/v1/register",
+          {
+            method: "POST",
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: emailValue,
+              plainPassword: passwordValue,
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          navigate("/logowanie");
+          setApiError("");
+        } else {
+          setApiError(result.message);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -161,6 +190,8 @@ export function RegistrationPage() {
             <Alert>{formErrors.repeatPassword}</Alert>
           )}
         </AuthContainerLabel>
+
+        {apiError && <p>{apiError}</p>}
         <StyledButton type="submit">Zarejestruj się</StyledButton>
       </form>
     </AuthContainer>

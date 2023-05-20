@@ -13,6 +13,7 @@ import {
   Alert,
 } from "../styles/authContainerStyles/authContainerStyles";
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const StyledButton = styled(AuthContainerButton)`
   margin-top: 70px;
@@ -32,9 +33,11 @@ type FormErrors = {
 };
 
 export function LoginPage() {
+  const navigate = useNavigate();
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [formErrors, setFormErrors] = useState<FormErrors>();
+  const [apiError, setApiError] = useState("");
 
   const validateEmail = () => {
     const emailErrorMessage = !checkIsEmailValid(emailValue)
@@ -61,13 +64,40 @@ export function LoginPage() {
     return passwordErrorMessage;
   };
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isEmailValid = !validateEmail();
     const isPasswordValid = !validatePassword();
 
     if (isEmailValid && isPasswordValid) {
-      console.log("poprawne");
+      try {
+        const response = await fetch(
+          "http://api.ultimate.systems/public/index.php/api/v1/login/check",
+          {
+            method: "POST",
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: emailValue,
+              password: passwordValue,
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.token) {
+          const token = result.token;
+          document.cookie = `token=${token}`;
+          navigate("/panel");
+        } else {
+          setApiError(result.message);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -107,6 +137,7 @@ export function LoginPage() {
           </AuthContainerInputDiv>
           {formErrors?.password && <Alert>{formErrors.password}</Alert>}
         </AuthContainerLabel>
+        {apiError && <p>{apiError}</p>}
         <StyledButton type="submit">Zaloguj się</StyledButton>
       </form>
     </AuthContainer>
