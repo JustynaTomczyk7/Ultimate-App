@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import IconFilter from "../../assets/img/icon-filter.svg";
+import { User } from "./types";
 
 const List = styled.ul`
   width: 100%;
@@ -77,7 +78,7 @@ const ListUserIconGB = styled.div`
   margin: 17px 22px;
 `;
 
-export function PanelList() {
+export function PanelList({ users }: { users: User[] }) {
   return (
     <div>
       <List>
@@ -108,29 +109,15 @@ export function PanelList() {
         </ListItem>
       </List>
 
-      <ListUser>
-        <ListUserIcon>NU</ListUserIcon>
-        <ListUserItem>Marek</ListUserItem>
-        <ListUserItem>Rostowski</ListUserItem>
-        <ListUserItem>m.rostowski@mail.pl</ListUserItem>
-        <ListUserItem>20.12.1988</ListUserItem>
-      </ListUser>
-
-      <ListUser>
-        <ListUserIconGB>GB</ListUserIconGB>
-        <ListUserItem>Paweł</ListUserItem>
-        <ListUserItem>Zawrzykaj</ListUserItem>
-        <ListUserItem>p.zawrzykaj@mail.pl</ListUserItem>
-        <ListUserItem>11.12.1988</ListUserItem>
-      </ListUser>
-
-      <ListUser>
-        <ListUserIconGB>GB</ListUserIconGB>
-        <ListUserItem>Mirek</ListUserItem>
-        <ListUserItem>Bartman</ListUserItem>
-        <ListUserItem>m.bartman@mail.pl</ListUserItem>
-        <ListUserItem>20.12.1986</ListUserItem>
-      </ListUser>
+      {users.map((user) => (
+        <ListUser>
+          <ListUserIcon>{user.is_activated ? "NU" : "GB"}</ListUserIcon>
+          <ListUserItem>{user.name || "-"}</ListUserItem>
+          <ListUserItem>{user.surname || "-"}</ListUserItem>
+          <ListUserItem>{user.email || "-"}</ListUserItem>
+          <ListUserItem>{user.birth_date || "-"}</ListUserItem>
+        </ListUser>
+      ))}
     </div>
   );
 }

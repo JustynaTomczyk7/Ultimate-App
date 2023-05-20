@@ -4,7 +4,8 @@ import { UserCount } from "./UserCount";
 import { PanelList } from "./PanelList";
 import { FilterContainer } from "./FilterContainer";
 import { FormContent } from "./EditForm/FormContent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { User } from "./types";
 
 const PanelContainer = styled.div`
   width: 1400px;
@@ -120,6 +121,40 @@ const ConfirmContainer = styled.div`
 export function PanelPage() {
   const [isEditFormActive, setIsEditFormActive] = useState(false);
   const [isInfoBoxDisplayed, setIsInfoBoxDisplayed] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+
+  const getUsers = async () => {
+    try {
+      const response = await fetch(
+        "http://api.ultimate.systems/public/index.php/api/v1/auth/users?" +
+          new URLSearchParams({
+            filter: `{"is_activated": "ACTIVE,INACTIVE"}`,
+            sort: `{
+            "id": "asc",
+            "name": "asc",
+            "surname": "asc",
+            "birth_date": "asc"
+          }`,
+            search: "",
+            page: "1",
+            perPage: "5",
+          })
+      );
+
+      const result = await response.json();
+
+      if (result.data) {
+        setUsers(result.data);
+      } else {
+        console.log("Error");
+      }
+      console.log(result);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   return (
     <>
@@ -128,7 +163,7 @@ export function PanelPage() {
         <EditButton onClick={() => setIsEditFormActive(true)}>
           Edytuj swoje konto
         </EditButton>
-        <PanelList />
+        <PanelList users={users} />
         <BottomNavigation>
           <Pagination />
           <UserCount />
