@@ -24,10 +24,7 @@ const ListButton = styled.button`
   background-color: transparent;
   padding: 0;
   height: 50px;
-
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
 
 const ListButtonImg = styled.img`

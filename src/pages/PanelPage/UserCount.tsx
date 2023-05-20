@@ -20,10 +20,7 @@ const Button = styled.button<{ isActive?: boolean }>`
   background-color: transparent;
   text-decoration: ${({ isActive }) => isActive && `underline`};
   font-weight: ${({ isActive }) => isActive && `600`};
-
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
 
 export function UserCount() {

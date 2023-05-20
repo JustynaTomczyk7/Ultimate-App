@@ -82,10 +82,7 @@ const CloseButton = styled.button`
   right: -15px;
   background-color: transparent;
   border: none;
-
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
 
 type Props = {

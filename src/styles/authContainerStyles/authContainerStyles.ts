@@ -47,7 +47,7 @@ export const AuthContainerInputDiv = styled.div`
   border: 0.5px solid var(--gray);
   border-radius: 6px;
   margin-top: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 35px;
 `;
 
 export const AuthContainerImgEmail = styled.img`
@@ -66,4 +66,9 @@ export const AuthContainerInput = styled.input`
   font-weight: 200;
   border: none;
   outline: none;
+`;
+
+export const Alert = styled.p`
+  color: red;
+  margin-top: -30px;
 `;

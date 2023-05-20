@@ -21,10 +21,7 @@ const CancelButton = styled.button`
   line-height: 38px;
   font-size: 15px;
   color: var(--blue);
-
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
 
 const SaveButton = styled.button`

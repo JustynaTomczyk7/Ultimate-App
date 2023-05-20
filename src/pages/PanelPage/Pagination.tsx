@@ -23,10 +23,7 @@ const Button = styled.button<{ isActive?: boolean }>`
   background-color: transparent;
   background: ${({ isActive }) => isActive && `black`};
   color: ${({ isActive }) => isActive && `white`};
-
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
 
 export function Pagination() {
