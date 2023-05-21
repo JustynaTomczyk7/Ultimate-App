@@ -140,7 +140,6 @@ export function PanelPage() {
 
   const getUsers = async () => {
     try {
-      console.log("perPage:", perPage);
       const params = {
         filter: { is_activated: isActivated },
         sort: sort,

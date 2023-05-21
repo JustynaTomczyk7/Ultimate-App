@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import IconFilter from "../../assets/img/icon-filter.svg";
 import { User } from "./types";
 import { Sort } from "./PanelPage";
@@ -29,8 +29,14 @@ const ListButton = styled.button`
   cursor: pointer;
 `;
 
-const ListButtonImg = styled.img`
+const ListButtonImg = styled.img<{ direction?: "asc" | "desc" }>`
   margin-left: 10px;
+
+  ${({ direction }) =>
+    direction === "asc" &&
+    css`
+      transform: rotate(180deg);
+    `}
 `;
 
 const ListUser = styled.ul`
@@ -88,26 +94,42 @@ export function PanelList({ users, sort, setSort }: Props) {
         <ListItem>
           <ListButton onClick={() => changeSortValue("name")}>
             Imię
-            <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
+            <ListButtonImg
+              direction={sort["name"]}
+              src={IconFilter}
+              alt="Ikona filtrowania"
+            />
           </ListButton>
         </ListItem>
 
         <ListItem>
           <ListButton onClick={() => changeSortValue("surname")}>
             Nazwisko
-            <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
+            <ListButtonImg
+              direction={sort["surname"]}
+              src={IconFilter}
+              alt="Ikona filtrowania"
+            />
           </ListButton>
         </ListItem>
         <ListItem>
           <ListButton onClick={() => changeSortValue("email")}>
             E-mail
-            <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
+            <ListButtonImg
+              direction={sort["email"]}
+              src={IconFilter}
+              alt="Ikona filtrowania"
+            />
           </ListButton>
         </ListItem>
         <ListItem>
           <ListButton onClick={() => changeSortValue("birth_date")}>
             Data urodzenia
-            <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
+            <ListButtonImg
+              direction={sort["birth_date"]}
+              src={IconFilter}
+              alt="Ikona filtrowania"
+            />
           </ListButton>
         </ListItem>
       </List>
