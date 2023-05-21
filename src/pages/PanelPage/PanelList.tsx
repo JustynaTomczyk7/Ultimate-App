@@ -65,18 +65,18 @@ const ListUserIcon = styled.div`
   margin: 17px 22px;
 `;
 
-const ListUserIconGB = styled.div`
-  width: 53px;
-  height: 53px;
-  line-height: 53px;
-  text-align: center;
-  position: absolute;
-  font-size: 18px;
-  color: var(--cream);
-  background-color: var(--green);
-  border-radius: 50%;
-  margin: 17px 22px;
-`;
+// const ListUserIconGB = styled.div`
+//   width: 53px;
+//   height: 53px;
+//   line-height: 53px;
+//   text-align: center;
+//   position: absolute;
+//   font-size: 18px;
+//   color: var(--cream);
+//   background-color: var(--green);
+//   border-radius: 50%;
+//   margin: 17px 22px;
+// `;
 
 export function PanelList({ users }: { users: User[] }) {
   return (

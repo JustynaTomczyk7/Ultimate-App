@@ -13,3 +13,14 @@ export type User = {
   selling: boolean;
   privacy: boolean;
 };
+
+export type FormErrors = {
+  email?: string;
+  name?: string;
+  surname?: string;
+  dateOfBirth?: string;
+  prefix?: string;
+  phone?: string;
+  checkboxPrivacyPolicy?: string;
+  checkboxSalesRegulations?: string;
+};

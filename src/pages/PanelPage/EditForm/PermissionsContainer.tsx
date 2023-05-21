@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FormErrors } from "../types";
 
 const Container = styled.div`
   width: 100%;
@@ -40,20 +41,42 @@ const ValidationMessagePermissions = styled.p`
   margin: 0;
   padding-top: 10px;
   margin-left: 44px;
-  visibility: hidden;
 `;
 
-export function PermissionsContainer() {
+type Props = {
+  formErrors?: FormErrors;
+  checkboxPrivacyPolicy: boolean;
+  onChangeCheckboxPrivacyPolice: (isChecked: boolean) => void;
+  checkboxSalesRegulations: boolean;
+  onChangeCheckboxSalesRegulations: (isChecked: boolean) => void;
+};
+
+export function PermissionsContainer({
+  formErrors,
+  checkboxPrivacyPolicy,
+  onChangeCheckboxPrivacyPolice,
+  checkboxSalesRegulations,
+  onChangeCheckboxSalesRegulations,
+}: Props) {
   return (
     <Container>
       <Label>
         <div>
-          <input type="checkbox" name="privacyPolicy" />
+          <input
+            type="checkbox"
+            name="checkboxPrivacyPolicy"
+            checked={checkboxPrivacyPolicy}
+            onChange={(e) => {
+              onChangeCheckboxPrivacyPolice(e.target.checked);
+            }}
+          />
           <p>*Polityka prywatności</p>
         </div>
-        <ValidationMessagePermissions>
-          *pole obowiązkowe
-        </ValidationMessagePermissions>
+        {formErrors?.checkboxPrivacyPolicy && (
+          <ValidationMessagePermissions>
+            {formErrors.checkboxPrivacyPolicy}
+          </ValidationMessagePermissions>
+        )}
       </Label>
       <Label>
         <div>
@@ -63,12 +86,21 @@ export function PermissionsContainer() {
       </Label>
       <Label>
         <div>
-          <input type="checkbox" name="salesRegulations" />
+          <input
+            type="checkbox"
+            name="checkboxSalesRegulations"
+            checked={checkboxSalesRegulations}
+            onChange={(e) => {
+              onChangeCheckboxSalesRegulations(e.target.checked);
+            }}
+          />
           <p>*Regulamin sprzedaży</p>
         </div>
-        <ValidationMessagePermissions>
-          *pole obowiązkowe
-        </ValidationMessagePermissions>
+        {formErrors?.checkboxSalesRegulations && (
+          <ValidationMessagePermissions>
+            {formErrors.checkboxSalesRegulations}
+          </ValidationMessagePermissions>
+        )}
       </Label>
     </Container>
   );
