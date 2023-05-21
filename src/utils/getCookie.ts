@@ -1,8 +1,8 @@
 export function getCookie(name: string) {
-  if (document.cookie.length !== 0) {
-    var array = document.cookie.split("=");
-    return array[1];
-  } else {
-    return false;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+
+  if (parts.length === 2) {
+    return parts.pop()?.split(";").shift();
   }
 }

@@ -5,6 +5,7 @@ import { Bottom } from "./Bottom";
 import { FormEvent, useEffect, useState } from "react";
 import { FormErrors } from "../types";
 import { getToken } from "../../../utils/getToken";
+import { getRefreshToken } from "../../../utils/getRefreshToken";
 
 const Form = styled.form`
   width: 100%;
@@ -120,6 +121,35 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
     useState(false);
   const [formErrors, setFormErrors] = useState<FormErrors>();
 
+  const refreshToken = async () => {
+    try {
+      const response = await fetch(
+        "http://api.ultimate.systems/public/index.php/api/v1/auth/token/refresh",
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refresh_token: getRefreshToken(),
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.token) {
+        const token = result.token;
+        const refreshToken = result.refresh_token;
+        document.cookie = `token=${token}`;
+        document.cookie = `refreshToken=${refreshToken}`;
+
+        getUserData();
+      }
+    } catch (error) {}
+  };
+
   const getUserData = async () => {
     try {
       const response = await fetch(
@@ -140,12 +170,16 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         setNameValue(result.data.name || "");
         setSurnameValue(result.data.surname || "");
         setDateOfBirthValue(result.data.birth_date || "");
-        setPrefixValue(result.data.phone_prefix || "");
+        setPrefixValue(result.data.phone_prefix || "+48");
         setPhoneValue(result.data.phone_number || "");
         setCheckboxPrivacyPolicy(result.data.privacy);
         setcheckboxSalesRegulations(result.data.selling);
       } else {
-        console.log("Error");
+        console.log("Error", result);
+
+        if (result.code === 401) {
+          refreshToken();
+        }
       }
       console.log(result);
     } catch (error) {}
@@ -204,8 +238,6 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
   };
 
   const validatePrefix = () => {
-    console.log("isValid", checkIsPrefixValid(prefixValue));
-
     const prefixErrorMessage = !checkIsPrefixValid(prefixValue)
       ? "*pole obowiązkowe"
       : "";

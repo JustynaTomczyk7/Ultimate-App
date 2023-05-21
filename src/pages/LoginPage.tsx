@@ -90,7 +90,9 @@ export function LoginPage() {
 
         if (result.token) {
           const token = result.token;
+          const refreshToken = result.refresh_token;
           document.cookie = `token=${token}`;
+          document.cookie = `refreshToken=${refreshToken}`;
           navigate("/panel");
         } else {
           setApiError(result.message);
