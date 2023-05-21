@@ -68,17 +68,51 @@ const ActivityButton = styled.div`
   }
 `;
 
-export function FilterContainer() {
+type Props = {
+  setSearch: (text: string) => void;
+  setIsActivated: (state: string) => void;
+  getUsers: () => Promise<void>;
+};
+
+export function FilterContainer({
+  setSearch,
+  setIsActivated,
+  getUsers,
+}: Props) {
   return (
     <Container>
       <Search>
-        <SearchInput type="text" placeholder="Filtruj po imię, nazwisko" />
-        <SearchButton>Szukaj</SearchButton>
+        <SearchInput
+          type="text"
+          placeholder="Filtruj po imię, nazwisko"
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+        <SearchButton onClick={getUsers}>Szukaj</SearchButton>
       </Search>
       <Activity>
-        <ActivityButton>Wszyscy</ActivityButton>
-        <ActivityButton>Aktywni</ActivityButton>
-        <ActivityButton>Nieaktywni</ActivityButton>
+        <ActivityButton
+          onClick={() => {
+            setIsActivated("ACTIVE,INACTIVE");
+          }}
+        >
+          Wszyscy
+        </ActivityButton>
+        <ActivityButton
+          onClick={() => {
+            setIsActivated("ACTIVE");
+          }}
+        >
+          Aktywni
+        </ActivityButton>
+        <ActivityButton
+          onClick={() => {
+            setIsActivated("INACTIVE");
+          }}
+        >
+          Nieaktywni
+        </ActivityButton>
       </Activity>
     </Container>
   );

@@ -6,6 +6,7 @@ import { FilterContainer } from "./FilterContainer";
 import { FormContent } from "./EditForm/FormContent";
 import { useEffect, useState } from "react";
 import { User } from "./types";
+import { buildQueryParams } from "../../utils/buildQueryParams";
 
 const PanelContainer = styled.div`
   width: 1400px;
@@ -121,24 +122,31 @@ const ConfirmContainer = styled.div`
 export function PanelPage() {
   const [isEditFormActive, setIsEditFormActive] = useState(false);
   const [isInfoBoxDisplayed, setIsInfoBoxDisplayed] = useState(false);
+  const [search, setSearch] = useState("");
+  const [isActivated, setIsActivated] = useState("ACTIVE,INACTIVE");
   const [users, setUsers] = useState<User[]>([]);
 
   const getUsers = async () => {
     try {
+      const params = {
+        filter: { is_activated: isActivated },
+        sort: {
+          id: "asc",
+          name: "asc",
+          surname: "asc",
+          birth_date: "asc",
+        },
+        search: search,
+        page: "1",
+        perPage: "5",
+      };
+
+      const queryParams = buildQueryParams(params);
+      const queryString = queryParams.join("&");
+
       const response = await fetch(
         "http://api.ultimate.systems/public/index.php/api/v1/auth/users?" +
-          new URLSearchParams({
-            filter: `{"is_activated": "ACTIVE,INACTIVE"}`,
-            sort: `{
-            "id": "asc",
-            "name": "asc",
-            "surname": "asc",
-            "birth_date": "asc"
-          }`,
-            search: "",
-            page: "1",
-            perPage: "5",
-          })
+          queryString
       );
 
       const result = await response.json();
@@ -154,12 +162,16 @@ export function PanelPage() {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [isActivated]);
 
   return (
     <>
       <PanelContainer>
-        <FilterContainer />
+        <FilterContainer
+          setSearch={setSearch}
+          getUsers={getUsers}
+          setIsActivated={setIsActivated}
+        />
         <EditButton onClick={() => setIsEditFormActive(true)}>
           Edytuj swoje konto
         </EditButton>
