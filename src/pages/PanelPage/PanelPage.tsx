@@ -119,26 +119,34 @@ const ConfirmContainer = styled.div`
   }
 `;
 
+type SortValue = "asc" | "desc";
+
+export type Sort = {
+  id?: SortValue;
+  name?: SortValue;
+  surname?: SortValue;
+  email?: SortValue;
+  birth_date?: SortValue;
+};
+
 export function PanelPage() {
   const [isEditFormActive, setIsEditFormActive] = useState(false);
   const [isInfoBoxDisplayed, setIsInfoBoxDisplayed] = useState(false);
   const [search, setSearch] = useState("");
   const [isActivated, setIsActivated] = useState("ACTIVE,INACTIVE");
+  const [perPage, setPerPage] = useState(5);
   const [users, setUsers] = useState<User[]>([]);
+  const [sort, setSort] = useState<Sort>({ id: "asc" });
 
   const getUsers = async () => {
     try {
+      console.log("perPage:", perPage);
       const params = {
         filter: { is_activated: isActivated },
-        sort: {
-          id: "asc",
-          name: "asc",
-          surname: "asc",
-          birth_date: "asc",
-        },
+        sort: sort,
         search: search,
         page: "1",
-        perPage: "5",
+        perPage: perPage,
       };
 
       const queryParams = buildQueryParams(params);
@@ -162,7 +170,7 @@ export function PanelPage() {
 
   useEffect(() => {
     getUsers();
-  }, [isActivated]);
+  }, [isActivated, perPage, sort]);
 
   return (
     <>
@@ -175,10 +183,10 @@ export function PanelPage() {
         <EditButton onClick={() => setIsEditFormActive(true)}>
           Edytuj swoje konto
         </EditButton>
-        <PanelList users={users} />
+        <PanelList users={users} sort={sort} setSort={setSort} />
         <BottomNavigation>
           <Pagination />
-          <UserCount />
+          <UserCount perPage={perPage} setPerPage={setPerPage} />
         </BottomNavigation>
       </PanelContainer>
 

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import IconFilter from "../../assets/img/icon-filter.svg";
 import { User } from "./types";
+import { Sort } from "./PanelPage";
 
 const List = styled.ul`
   width: 100%;
@@ -52,7 +53,7 @@ const ListUserItem = styled.li`
   }
 `;
 
-const ListUserIcon = styled.div`
+const ListUserIcon = styled.div<{ isActive: boolean }>`
   width: 53px;
   height: 53px;
   line-height: 53px;
@@ -60,49 +61,51 @@ const ListUserIcon = styled.div`
   position: absolute;
   font-size: 18px;
   color: var(--cream);
-  background-color: var(--dark-green);
+  background-color: ${({ isActive }) =>
+    isActive ? "var(--dark-green)" : " var(--green)"};
   border-radius: 50%;
   margin: 17px 22px;
 `;
 
-// const ListUserIconGB = styled.div`
-//   width: 53px;
-//   height: 53px;
-//   line-height: 53px;
-//   text-align: center;
-//   position: absolute;
-//   font-size: 18px;
-//   color: var(--cream);
-//   background-color: var(--green);
-//   border-radius: 50%;
-//   margin: 17px 22px;
-// `;
+type Props = {
+  users: User[];
+  sort: Sort;
+  setSort: (newSort: Sort) => void;
+};
 
-export function PanelList({ users }: { users: User[] }) {
+export function PanelList({ users, sort, setSort }: Props) {
+  const changeSortValue = (param: keyof Sort) => {
+    if (sort[param] === "asc") {
+      setSort({ [param]: "desc" });
+    } else {
+      setSort({ [param]: "asc" });
+    }
+  };
+
   return (
     <div>
       <List>
         <ListItem>
-          <ListButton>
+          <ListButton onClick={() => changeSortValue("name")}>
             Imię
             <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
           </ListButton>
         </ListItem>
 
         <ListItem>
-          <ListButton>
+          <ListButton onClick={() => changeSortValue("surname")}>
             Nazwisko
             <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
           </ListButton>
         </ListItem>
         <ListItem>
-          <ListButton>
+          <ListButton onClick={() => changeSortValue("email")}>
             E-mail
             <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
           </ListButton>
         </ListItem>
         <ListItem>
-          <ListButton>
+          <ListButton onClick={() => changeSortValue("birth_date")}>
             Data urodzenia
             <ListButtonImg src={IconFilter} alt="Ikona filtrowania" />
           </ListButton>
@@ -111,7 +114,9 @@ export function PanelList({ users }: { users: User[] }) {
 
       {users.map((user) => (
         <ListUser>
-          <ListUserIcon>{user.is_activated ? "NU" : "GB"}</ListUserIcon>
+          <ListUserIcon isActive={user.is_activated}>
+            {user.is_activated ? "NU" : "GB"}
+          </ListUserIcon>
           <ListUserItem>{user.name || "-"}</ListUserItem>
           <ListUserItem>{user.surname || "-"}</ListUserItem>
           <ListUserItem>{user.email || "-"}</ListUserItem>

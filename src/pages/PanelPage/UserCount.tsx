@@ -23,33 +23,27 @@ const Button = styled.button<{ isActive?: boolean }>`
   cursor: pointer;
 `;
 
-export function UserCount() {
-  const [selectedNumber, setSelectedNumber] = useState(3);
+type Props = {
+  perPage: number;
+  setPerPage: (pageNumber: number) => void;
+};
 
+export function UserCount({ perPage, setPerPage }: Props) {
   return (
     <Container>
       Pokaż na stronie:
       <li>
-        <Button
-          onClick={() => setSelectedNumber(3)}
-          isActive={selectedNumber === 3}
-        >
+        <Button onClick={() => setPerPage(3)} isActive={perPage === 3}>
           3
         </Button>
       </li>
       <li>
-        <Button
-          onClick={() => setSelectedNumber(5)}
-          isActive={selectedNumber === 5}
-        >
+        <Button onClick={() => setPerPage(5)} isActive={perPage === 5}>
           5
         </Button>
       </li>
       <li>
-        <Button
-          onClick={() => setSelectedNumber(10)}
-          isActive={selectedNumber === 10}
-        >
+        <Button onClick={() => setPerPage(10)} isActive={perPage === 10}>
           10
         </Button>
       </li>
