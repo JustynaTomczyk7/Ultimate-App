@@ -117,9 +117,52 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
   const [prefixValue, setPrefixValue] = useState("+48");
   const [phoneValue, setPhoneValue] = useState("");
   const [checkboxPrivacyPolicy, setCheckboxPrivacyPolicy] = useState(false);
+  const [checkboxMarketing, setCheckboxMarketing] = useState(false);
   const [checkboxSalesRegulations, setcheckboxSalesRegulations] =
     useState(false);
   const [formErrors, setFormErrors] = useState<FormErrors>();
+
+  const updateUserData = async () => {
+    try {
+      const response = await fetch(
+        "http://api.ultimate.systems/public/index.php/api/v1/auth/user",
+        {
+          method: "PATCH",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify({
+            email: emailValue,
+            isBlocked: false,
+            isActivated: false,
+            name: nameValue,
+            surname: surnameValue,
+            birthDate: dateOfBirthValue,
+            phonePrefix: prefixValue,
+            phoneNumber: phoneValue,
+            privacyPolicy: true,
+            marketingAgreements: checkboxMarketing,
+            sellingRegulation: true,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        onClickSaveButton();
+        onClickCloseButton();
+      }
+
+      if (response.status === 401) {
+        console.log("Error", result);
+        await refreshToken();
+        updateUserData();
+      }
+    } catch (error) {}
+  };
 
   const refreshToken = async () => {
     try {
@@ -144,8 +187,6 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         const refreshToken = result.refresh_token;
         document.cookie = `token=${token}`;
         document.cookie = `refreshToken=${refreshToken}`;
-
-        getUserData();
       }
     } catch (error) {}
   };
@@ -173,12 +214,14 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         setPrefixValue(result.data.phone_prefix || "+48");
         setPhoneValue(result.data.phone_number || "");
         setCheckboxPrivacyPolicy(result.data.privacy);
+        setCheckboxMarketing(result.data.marketing);
         setcheckboxSalesRegulations(result.data.selling);
       } else {
         console.log("Error", result);
 
-        if (result.code === 401) {
-          refreshToken();
+        if (response.status === 401) {
+          await refreshToken();
+          getUserData();
         }
       }
       console.log(result);
@@ -293,6 +336,10 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
     validatecheckboxPrivacyPolicy(isChecked);
   };
 
+  const onChangeCheckboxMarketing = (isChecked: boolean) => {
+    setCheckboxMarketing(isChecked);
+  };
+
   const onChangeCheckboxSalesRegulations = (isChecked: boolean) => {
     setcheckboxSalesRegulations(isChecked);
     validatecheckboxSalesRegulations(isChecked);
@@ -324,7 +371,7 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
       isPrivacyPolicyValid &&
       isSalesRegulationsValid
     ) {
-      onClickSaveButton();
+      updateUserData();
     }
   };
 
@@ -413,6 +460,8 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         <PermissionsContainer
           checkboxPrivacyPolicy={checkboxPrivacyPolicy}
           onChangeCheckboxPrivacyPolice={onChangeCheckboxPrivacyPolice}
+          checkboxMarketing={checkboxMarketing}
+          onChangeCheckboxMarketing={onChangeCheckboxMarketing}
           checkboxSalesRegulations={checkboxSalesRegulations}
           onChangeCheckboxSalesRegulations={onChangeCheckboxSalesRegulations}
           formErrors={formErrors}

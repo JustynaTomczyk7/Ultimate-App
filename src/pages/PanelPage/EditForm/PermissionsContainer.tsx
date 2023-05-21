@@ -47,6 +47,8 @@ type Props = {
   formErrors?: FormErrors;
   checkboxPrivacyPolicy: boolean;
   onChangeCheckboxPrivacyPolice: (isChecked: boolean) => void;
+  checkboxMarketing: boolean;
+  onChangeCheckboxMarketing: (isChecked: boolean) => void;
   checkboxSalesRegulations: boolean;
   onChangeCheckboxSalesRegulations: (isChecked: boolean) => void;
 };
@@ -55,6 +57,8 @@ export function PermissionsContainer({
   formErrors,
   checkboxPrivacyPolicy,
   onChangeCheckboxPrivacyPolice,
+  checkboxMarketing,
+  onChangeCheckboxMarketing,
   checkboxSalesRegulations,
   onChangeCheckboxSalesRegulations,
 }: Props) {
@@ -80,7 +84,14 @@ export function PermissionsContainer({
       </Label>
       <Label>
         <div>
-          <input type="checkbox" name="marketing" />
+          <input
+            type="checkbox"
+            name="checkboxMarketing"
+            checked={checkboxMarketing}
+            onChange={(e) => {
+              onChangeCheckboxMarketing(e.target.checked);
+            }}
+          />
           <p>Zgody marketingowe</p>
         </div>
       </Label>
