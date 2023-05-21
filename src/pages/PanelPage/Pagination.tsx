@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { PaginationData } from "./PanelPage";
 
 const Container = styled.ul`
   display: flex;
@@ -26,46 +27,79 @@ const Button = styled.button<{ isActive?: boolean }>`
   cursor: pointer;
 `;
 
-export function Pagination() {
-  const [selectedNumber, setSelectedNumber] = useState(1);
+type Props = {
+  page: number;
+  setPage: (pageNumber: number) => void;
+  paginationData?: PaginationData;
+  perPage: number;
+};
+
+export function Pagination({ page, setPage, paginationData, perPage }: Props) {
+  if (!paginationData?.total) return <></>;
+  const totalPages = Math.ceil(paginationData?.total / perPage);
 
   return (
     <Container>
       <li>
-        <Button
-          onClick={() => setSelectedNumber(1)}
-          isActive={selectedNumber === 1}
-        >
+        <Button onClick={() => setPage(1)} isActive={page === 1}>
           1
         </Button>
       </li>
-      <li>
-        <Button
-          onClick={() => setSelectedNumber(2)}
-          isActive={selectedNumber === 2}
-        >
-          2
-        </Button>
-      </li>
-      <li>
-        <Button
-          onClick={() => setSelectedNumber(3)}
-          isActive={selectedNumber === 3}
-        >
-          3
-        </Button>
-      </li>
-      <li>
-        <span>...</span>
-      </li>
-      <li>
-        <Button
-          onClick={() => setSelectedNumber(12)}
-          isActive={selectedNumber === 12}
-        >
-          12
-        </Button>
-      </li>
+
+      {page - 1 > 3 && (
+        <li>
+          <span>...</span>
+        </li>
+      )}
+
+      {page - 2 > 1 && (
+        <li>
+          <Button onClick={() => setPage(page - 2)}>{page - 2}</Button>
+        </li>
+      )}
+
+      {page - 1 > 1 && (
+        <li>
+          <Button onClick={() => setPage(page - 1)}>{page - 1}</Button>
+        </li>
+      )}
+
+      {page > 1 && page < totalPages && (
+        <li>
+          <Button onClick={() => setPage(page)} isActive>
+            {page}
+          </Button>
+        </li>
+      )}
+
+      {page + 1 < totalPages && (
+        <li>
+          <Button onClick={() => setPage(page + 1)}>{page + 1}</Button>
+        </li>
+      )}
+
+      {page + 2 < totalPages && (
+        <li>
+          <Button onClick={() => setPage(page + 2)}>{page + 2}</Button>
+        </li>
+      )}
+
+      {page + 3 < totalPages && (
+        <li>
+          <span>...</span>
+        </li>
+      )}
+
+      {totalPages > 3 && (
+        <li>
+          <Button
+            onClick={() => setPage(totalPages)}
+            isActive={page === totalPages}
+          >
+            {totalPages}
+          </Button>
+        </li>
+      )}
     </Container>
   );
 }

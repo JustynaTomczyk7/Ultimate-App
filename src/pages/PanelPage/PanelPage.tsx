@@ -129,6 +129,11 @@ export type Sort = {
   birth_date?: SortValue;
 };
 
+export type PaginationData = {
+  more: boolean;
+  total: number;
+};
+
 export function PanelPage() {
   const [isEditFormActive, setIsEditFormActive] = useState(false);
   const [isInfoBoxDisplayed, setIsInfoBoxDisplayed] = useState(false);
@@ -137,6 +142,8 @@ export function PanelPage() {
   const [perPage, setPerPage] = useState(5);
   const [users, setUsers] = useState<User[]>([]);
   const [sort, setSort] = useState<Sort>({ id: "asc" });
+  const [page, setPage] = useState(1);
+  const [paginationData, setPaginationData] = useState<PaginationData>();
 
   const getUsers = async () => {
     try {
@@ -144,7 +151,7 @@ export function PanelPage() {
         filter: { is_activated: isActivated },
         sort: sort,
         search: search,
-        page: "1",
+        page: page,
         perPage: perPage,
       };
 
@@ -160,6 +167,10 @@ export function PanelPage() {
 
       if (result.data) {
         setUsers(result.data);
+        setPaginationData({
+          more: result.more,
+          total: result.total,
+        });
       } else {
         console.log("Error");
       }
@@ -169,7 +180,7 @@ export function PanelPage() {
 
   useEffect(() => {
     getUsers();
-  }, [isActivated, perPage, sort]);
+  }, [isActivated, perPage, sort, page]);
 
   return (
     <>
@@ -184,7 +195,12 @@ export function PanelPage() {
         </EditButton>
         <PanelList users={users} sort={sort} setSort={setSort} />
         <BottomNavigation>
-          <Pagination />
+          <Pagination
+            page={page}
+            setPage={setPage}
+            paginationData={paginationData}
+            perPage={perPage}
+          />
           <UserCount perPage={perPage} setPerPage={setPerPage} />
         </BottomNavigation>
       </PanelContainer>
