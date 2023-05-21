@@ -5,15 +5,6 @@ import { RegistrationPage } from "./pages/RegistrationPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PanelPage } from "./pages/PanelPage/PanelPage";
 
-// function getCookie(name: string) {
-//   if (document.cookie.length !== 0) {
-//     var array = document.cookie.split("=");
-//     return array[1];
-//   } else {
-//     return false;
-//   }
-// }
-
 function App() {
   return (
     <>

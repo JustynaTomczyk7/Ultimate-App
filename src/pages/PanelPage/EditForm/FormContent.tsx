@@ -2,8 +2,9 @@ import styled from "styled-components";
 import IconCloseImg from "../../../assets/img/icon-close.svg";
 import { PermissionsContainer } from "./PermissionsContainer";
 import { Bottom } from "./Bottom";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FormErrors } from "../types";
+import { getToken } from "../../../utils/getToken";
 
 const Form = styled.form`
   width: 100%;
@@ -118,6 +119,41 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
   const [checkboxSalesRegulations, setcheckboxSalesRegulations] =
     useState(false);
   const [formErrors, setFormErrors] = useState<FormErrors>();
+
+  const getUserData = async () => {
+    try {
+      const response = await fetch(
+        "http://api.ultimate.systems/public/index.php/api/v1/auth/user",
+        {
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.data) {
+        setEmailValue(result.data.email || "");
+        setNameValue(result.data.name || "");
+        setSurnameValue(result.data.surname || "");
+        setDateOfBirthValue(result.data.birth_date || "");
+        setPrefixValue(result.data.phone_prefix || "");
+        setPhoneValue(result.data.phone_number || "");
+        setCheckboxPrivacyPolicy(result.data.privacy);
+        setcheckboxSalesRegulations(result.data.selling);
+      } else {
+        console.log("Error");
+      }
+      console.log(result);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   const validateEmail = () => {
     const emailErrorMessage = !checkIsEmailValid(emailValue)
@@ -337,7 +373,7 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
           {formErrors?.phone && (
             <ValidationMessage>{formErrors.phone}</ValidationMessage>
           )}
-          {formErrors?.prefix && (
+          {!formErrors?.phone && formErrors?.prefix && (
             <ValidationMessage>{formErrors.prefix}</ValidationMessage>
           )}
         </Label>
