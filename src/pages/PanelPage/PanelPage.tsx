@@ -7,6 +7,7 @@ import { FormContent } from "./EditForm/FormContent";
 import { useEffect, useState } from "react";
 import { User } from "./types";
 import { buildQueryParams } from "../../utils/buildQueryParams";
+import { apiUrl } from "../../consts";
 
 const PanelContainer = styled.div`
   width: 1400px;
@@ -23,7 +24,26 @@ const EditButton = styled.button`
   border: 1px solid var(--dark-blue-border);
   border-radius: 14px;
   background-color: var(--white);
-  margin: 80px 0 80px auto;
+  margin: 45px 0 17px auto;
+  display: block;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--dark-blue-border);
+    color: var(--white);
+  }
+`;
+
+const LogOutButton = styled.button`
+  width: 228px;
+  line-height: 49px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: 14px;
+  background-color: var(--white);
+  margin: 0 0 45px auto;
   display: block;
 
   &:hover {
@@ -188,10 +208,7 @@ export function PanelPage() {
       const queryParams = buildQueryParams(params);
       const queryString = queryParams.join("&");
 
-      const response = await fetch(
-        "http://api.ultimate.systems/public/index.php/api/v1/auth/users?" +
-          queryString
-      );
+      const response = await fetch(`${apiUrl}auth/users?` + queryString);
 
       const result: GetUsersApiResponse = await response.json();
 
@@ -229,6 +246,7 @@ export function PanelPage() {
         <EditButton onClick={() => setIsEditFormActive(true)}>
           Edytuj swoje konto
         </EditButton>
+        <LogOutButton>Wyloguj</LogOutButton>
         <PanelList users={users} sort={sort} setSort={setSort} />
         <BottomNavigation>
           <Pagination

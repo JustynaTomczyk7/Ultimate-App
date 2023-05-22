@@ -8,6 +8,7 @@ import { FormEvent, useEffect } from "react";
 import { getToken } from "../../../utils/getToken";
 import { getRefreshToken } from "../../../utils/getRefreshToken";
 import { useUserValidate } from "../useUserValidate";
+import { apiUrl } from "../../../consts";
 
 const Form = styled.form`
   width: 100%;
@@ -145,30 +146,27 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
 
   const updateUserData = async () => {
     try {
-      const response = await fetch(
-        "http://api.ultimate.systems/public/index.php/api/v1/auth/user",
-        {
-          method: "PATCH",
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}`,
-          },
-          body: JSON.stringify({
-            email: emailValue,
-            isBlocked: false,
-            isActivated: false,
-            name: nameValue,
-            surname: surnameValue,
-            birthDate: dateOfBirthValue,
-            phonePrefix: prefixValue,
-            phoneNumber: phoneValue,
-            privacyPolicy: true,
-            marketingAgreements: checkboxMarketing,
-            sellingRegulation: true,
-          }),
-        }
-      );
+      const response = await fetch(`${apiUrl}auth/user`, {
+        method: "PATCH",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          email: emailValue,
+          isBlocked: false,
+          isActivated: false,
+          name: nameValue,
+          surname: surnameValue,
+          birthDate: dateOfBirthValue,
+          phonePrefix: prefixValue,
+          phoneNumber: phoneValue,
+          privacyPolicy: true,
+          marketingAgreements: checkboxMarketing,
+          sellingRegulation: true,
+        }),
+      });
 
       const result = await response.json();
 
@@ -187,19 +185,16 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
 
   const refreshToken = async () => {
     try {
-      const response = await fetch(
-        "http://api.ultimate.systems/public/index.php/api/v1/auth/token/refresh",
-        {
-          method: "POST",
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            refresh_token: getRefreshToken(),
-          }),
-        }
-      );
+      const response = await fetch(`${apiUrl}auth/token/refresh`, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh_token: getRefreshToken(),
+        }),
+      });
 
       const result = await response.json();
 
@@ -214,16 +209,13 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
 
   const getUserData = async () => {
     try {
-      const response = await fetch(
-        "http://api.ultimate.systems/public/index.php/api/v1/auth/user",
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}auth/user`, {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
 
       const result = await response.json();
 

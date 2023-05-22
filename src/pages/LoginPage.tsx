@@ -14,6 +14,7 @@ import {
 } from "../styles/authContainerStyles/authContainerStyles";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../consts";
 
 const StyledButton = styled(AuthContainerButton)`
   margin-top: 70px;
@@ -71,20 +72,17 @@ export function LoginPage() {
 
     if (isEmailValid && isPasswordValid) {
       try {
-        const response = await fetch(
-          "http://api.ultimate.systems/public/index.php/api/v1/login/check",
-          {
-            method: "POST",
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: emailValue,
-              password: passwordValue,
-            }),
-          }
-        );
+        const response = await fetch(`${apiUrl}login/check`, {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: emailValue,
+            password: passwordValue,
+          }),
+        });
 
         const result = await response.json();
 

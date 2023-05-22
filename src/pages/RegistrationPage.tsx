@@ -14,6 +14,7 @@ import {
 } from "../styles/authContainerStyles/authContainerStyles";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../consts";
 
 const StyledButton = styled(AuthContainerButton)`
   margin-top: 70px;
@@ -107,20 +108,17 @@ export function RegistrationPage() {
 
     if (isEmailValid && isPasswordValid && isRepeatPasswordValid) {
       try {
-        const response = await fetch(
-          "http://api.ultimate.systems/public/index.php/api/v1/register",
-          {
-            method: "POST",
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: emailValue,
-              plainPassword: passwordValue,
-            }),
-          }
-        );
+        const response = await fetch(`${apiUrl}register`, {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: emailValue,
+            plainPassword: passwordValue,
+          }),
+        });
 
         const result = await response.json();
 
