@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { User } from "./types";
 import { buildQueryParams } from "../../utils/buildQueryParams";
 import { apiUrl } from "../../consts";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
 
 const PanelContainer = styled.div`
   width: 1400px;
@@ -186,6 +188,7 @@ export function PanelPage() {
   const [sort, setSort] = useState<Sort>({ id: "desc" });
   const [page, setPage] = useState(1);
   const [paginationData, setPaginationData] = useState<PaginationData>();
+  const dispatch = useDispatch();
 
   const changeFormatDate = (birthDate: string) => {
     const date = new Date(birthDate);
@@ -246,7 +249,15 @@ export function PanelPage() {
         <EditButton onClick={() => setIsEditFormActive(true)}>
           Edytuj swoje konto
         </EditButton>
-        <LogOutButton>Wyloguj</LogOutButton>
+        <LogOutButton
+          onClick={() => {
+            document.cookie = `token =`;
+            document.cookie = `refreshToken =`;
+            dispatch(logout());
+          }}
+        >
+          Wyloguj
+        </LogOutButton>
         <PanelList users={users} sort={sort} setSort={setSort} />
         <BottomNavigation>
           <Pagination

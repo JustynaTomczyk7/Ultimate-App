@@ -6,9 +6,9 @@ import { PermissionsContainer } from "./PermissionsContainer";
 import { Bottom } from "./Bottom";
 import { FormEvent, useEffect } from "react";
 import { getToken } from "../../../utils/getToken";
-import { getRefreshToken } from "../../../utils/getRefreshToken";
 import { useUserValidate } from "../useUserValidate";
 import { apiUrl } from "../../../consts";
+import { useRefreshToken } from "../../../hooks/useRefreshToken";
 
 const Form = styled.form`
   width: 100%;
@@ -143,6 +143,7 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
     validatecheckboxSalesRegulations,
     validateForm,
   } = useUserValidate();
+  const refreshToken = useRefreshToken();
 
   const updateUserData = async () => {
     try {
@@ -179,30 +180,6 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         console.log("Error", result);
         await refreshToken();
         updateUserData();
-      }
-    } catch (error) {}
-  };
-
-  const refreshToken = async () => {
-    try {
-      const response = await fetch(`${apiUrl}auth/token/refresh`, {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          refresh_token: getRefreshToken(),
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.token) {
-        const token = result.token;
-        const refreshToken = result.refresh_token;
-        document.cookie = `token=${token}`;
-        document.cookie = `refreshToken=${refreshToken}`;
       }
     } catch (error) {}
   };

@@ -15,6 +15,8 @@ import {
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "../consts";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/authSlice";
 
 const StyledButton = styled(AuthContainerButton)`
   margin-top: 70px;
@@ -39,6 +41,7 @@ export function LoginPage() {
   const [passwordValue, setPasswordValue] = useState("");
   const [formErrors, setFormErrors] = useState<FormErrors>();
   const [apiError, setApiError] = useState("");
+  const dispatch = useDispatch();
 
   const validateEmail = () => {
     const emailErrorMessage = !checkIsEmailValid(emailValue)
@@ -91,6 +94,8 @@ export function LoginPage() {
           const refreshToken = result.refresh_token;
           document.cookie = `token=${token}`;
           document.cookie = `refreshToken=${refreshToken}`;
+          dispatch(login());
+
           navigate("/panel");
         } else {
           setApiError(result.message);
