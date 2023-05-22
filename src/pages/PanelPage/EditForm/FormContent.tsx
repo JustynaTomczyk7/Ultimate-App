@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import IconCloseImg from "../../../assets/img/icon-close.svg";
 import { PermissionsContainer } from "./PermissionsContainer";
 import { Bottom } from "./Bottom";
@@ -21,6 +23,22 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
+  display: block;
+  padding: 0;
+  border: none;
+  border-bottom: thin solid var(--gray);
+  width: 280px;
+  line-height: 25px;
+  font-size: 18px;
+  font-weight: 200;
+  margin-top: 10px;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const StyledDatePicker = styled(DatePicker)`
   display: block;
   padding: 0;
   border: none;
@@ -113,7 +131,9 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
   const [emailValue, setEmailValue] = useState("");
   const [nameValue, setNameValue] = useState("");
   const [surnameValue, setSurnameValue] = useState("");
-  const [dateOfBirthValue, setDateOfBirthValue] = useState("");
+  const [dateOfBirthValue, setDateOfBirthValue] = useState<Date | null>(
+    new Date()
+  );
   const [prefixValue, setPrefixValue] = useState("+48");
   const [phoneValue, setPhoneValue] = useState("");
   const [checkboxPrivacyPolicy, setCheckboxPrivacyPolicy] = useState(false);
@@ -210,7 +230,7 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         setEmailValue(result.data.email || "");
         setNameValue(result.data.name || "");
         setSurnameValue(result.data.surname || "");
-        setDateOfBirthValue(result.data.birth_date || "");
+        setDateOfBirthValue(new Date(result.data.birth_date) || null);
         setPrefixValue(result.data.phone_prefix || "+48");
         setPhoneValue(result.data.phone_number || "");
         setCheckboxPrivacyPolicy(result.data.privacy);
@@ -269,8 +289,7 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
   };
 
   const validateDateOfBirth = () => {
-    const dateOfBirthErrorMessage =
-      dateOfBirthValue.length === 0 ? "*pole obowiązkowe" : "";
+    const dateOfBirthErrorMessage = dateOfBirthValue ? "" : "*pole obowiązkowe";
 
     setFormErrors((state) => ({
       ...state,
@@ -419,12 +438,11 @@ export function FormContent({ onClickCloseButton, onClickSaveButton }: Props) {
         </Label>
         <Label>
           * Data urodzenia
-          <Input
-            type="date"
-            name="dateOfBirth"
-            value={dateOfBirthValue}
-            onChange={(e) => setDateOfBirthValue(e.target.value)}
+          <StyledDatePicker
+            selected={dateOfBirthValue}
+            onChange={(date: Date | null) => setDateOfBirthValue(date)}
             onBlur={validateDateOfBirth}
+            dateFormat="dd.MM.yyyy"
           />
           {formErrors?.dateOfBirth && (
             <ValidationMessage>{formErrors.dateOfBirth}</ValidationMessage>
