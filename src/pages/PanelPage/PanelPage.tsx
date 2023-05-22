@@ -134,6 +134,28 @@ export type PaginationData = {
   total: number;
 };
 
+type UserApiResponse = {
+  birth_date: string;
+  email: string;
+  id: number;
+  is_activated: boolean;
+  is_blocked: boolean;
+  marketing: boolean;
+  name: string;
+  phone_number: number;
+  phone_prefix: string;
+  privacy: boolean;
+  roles: string[];
+  selling: boolean;
+  surname: string;
+};
+
+type GetUsersApiResponse = {
+  data: UserApiResponse[];
+  more: boolean;
+  total: number;
+};
+
 export function PanelPage() {
   const [isEditFormActive, setIsEditFormActive] = useState(false);
   const [isInfoBoxDisplayed, setIsInfoBoxDisplayed] = useState(false);
@@ -141,9 +163,17 @@ export function PanelPage() {
   const [isActivated, setIsActivated] = useState("ACTIVE,INACTIVE");
   const [perPage, setPerPage] = useState(5);
   const [users, setUsers] = useState<User[]>([]);
-  const [sort, setSort] = useState<Sort>({ id: "asc" });
+  const [sort, setSort] = useState<Sort>({ id: "desc" });
   const [page, setPage] = useState(1);
   const [paginationData, setPaginationData] = useState<PaginationData>();
+
+  const changeFormatDate = (birthDate: string) => {
+    const date = new Date(birthDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = date.getDate();
+    return `${day}.${month}.${year}`;
+  };
 
   const getUsers = async () => {
     try {
@@ -163,10 +193,16 @@ export function PanelPage() {
           queryString
       );
 
-      const result = await response.json();
+      const result: GetUsersApiResponse = await response.json();
 
       if (result.data) {
-        setUsers(result.data);
+        const newUsers = result.data.map((newUser) => ({
+          ...newUser,
+          birth_date: changeFormatDate(newUser.birth_date),
+        }));
+
+        setUsers(newUsers);
+
         setPaginationData({
           more: result.more,
           total: result.total,
@@ -211,7 +247,10 @@ export function PanelPage() {
             <EditForm>
               <EditFormHeader>Edycja danych</EditFormHeader>
               <FormContent
-                onClickCloseButton={() => setIsEditFormActive(false)}
+                onClickCloseButton={() => {
+                  setIsEditFormActive(false);
+                  getUsers();
+                }}
                 onClickSaveButton={() => setIsInfoBoxDisplayed(true)}
               />
             </EditForm>
