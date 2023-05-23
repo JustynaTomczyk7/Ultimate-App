@@ -135,7 +135,7 @@ export function PanelList({ users, sort, setSort }: Props) {
       </List>
 
       {users.map((user) => (
-        <ListUser>
+        <ListUser key={user.id}>
           <ListUserIcon isActive={user.is_activated}>
             {user.is_activated ? "NU" : "GB"}
           </ListUserIcon>
